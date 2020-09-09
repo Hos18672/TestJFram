@@ -1,3 +1,5 @@
+
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Iterator;
@@ -9,6 +11,7 @@ public class Graph {
 
     int size;
     private  int radius, durchmesser =0;
+    private  String zentrum;
     private Integer AdjacencyMatrix2[][];
     private Integer distanceMatix[][];
     private Integer wegmatrix[][];
@@ -16,32 +19,63 @@ public class Graph {
     private int exzentrizitaet[];
     private int posUnique[];
 
+    public void setZentrum(String zentrum) {
+        this.zentrum = zentrum;
+    }
 
+    public String getZentrum() {
+        return zentrum;
+    }
+
+    public Integer[][] getAdjacencyMatrix2() {
+        return AdjacencyMatrix2;
+    }
+
+    public Integer[][] getDistanceMatix() {
+        return distanceMatix;
+    }
+
+    public Integer[][] getWegmatrix() {
+        return wegmatrix;
+    }
+
+    public Integer[][] getMatrixA() {
+        return matrixA;
+    }
+
+    public int[] getExzentrizitaet() {
+        return exzentrizitaet;
+    }
+
+    public int getSize() {
+        return size;
+    }
 
     public int getRadius() {
         return radius;
     }
+
     public int getDurchmesser() {
         return durchmesser;
     }
-    public Integer[][] getAdjacencyMatrix2() {
-        return AdjacencyMatrix2;
+
+    public void setSize(int size) {
+        this.size = size;
     }
-    public Integer[][] getDistanceMatix() {
-        return distanceMatix;
+
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
-    public Integer[][] getWegmatrix() {
-        return wegmatrix;
-    }
-    public int[] getExzentrizitaet() {
-        return exzentrizitaet;
+
+    public void setDurchmesser(int durchmesser) {
+        this.durchmesser = durchmesser;
     }
 
     public Integer[][] readCSVFile()
     {
         Integer[][] myArray = null;
         String inputLine = "";
-        String filelocation ="C:\\Users\\rezah\\OneDrive\\Desktop\\input_graph.csv";
+        String filelocation ="C:\\Users\\rezah\\OneDrive\\Desktop\\input_graph1.csv";
         System.out.println("....");
         try{
             //setup a scanner
@@ -156,7 +190,7 @@ public class Graph {
             for (int col = 0; col < size ; col++) {
                 sum =0;
                 for (int index = 0; index < size; index++) {
-                        sum = sum + matrixA[row][index] * AdjacencyMatrix2[index][col];
+                    sum = sum + matrixA[row][index] * AdjacencyMatrix2[index][col];
                 }
                 multiply[row][col] = sum;
             }
@@ -179,20 +213,7 @@ public class Graph {
             System.out.println();
         }
     }
-
-    public Integer[][] GetDistanceMatrix()
-    {
-        Integer[][] n = new Integer[0][0];
-        System.out.println("\n\n------------ Print DistanceMatrix---------------------\n");
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                n = new Integer[size][size];
-              n[i][j] = distanceMatix[i][j] ;
-            }
-        }
-        return  n; 
-    }
-    public void exzentrizitaet(){
+    public String exzentrizitaet(){
         int max = 0;
         String info = "{ ";
         for (int i = 0; i < distanceMatix.length; i++){
@@ -213,6 +234,7 @@ public class Graph {
         }
         info = info+ "} \n";
         System.out.print(info);
+        return info;
 
     }
 
@@ -222,9 +244,11 @@ public class Graph {
         for (int i = 0; i < exzentrizitaet.length; i++){
             if (exzentrizitaet[i] < radius && exzentrizitaet[i] > -1 ){
                 radius = exzentrizitaet[i];
+                setRadius(radius);
             }
             if (exzentrizitaet[i] > durchmesser){
                 this.durchmesser = exzentrizitaet[i];
+                setDurchmesser(this.durchmesser);
             }
         }
         System.out.println("\n------------ Print Radius ---------------------\n");
@@ -251,6 +275,7 @@ public class Graph {
 
         System.out.println("\n------------ Print Zentrum ---------------------\n");
         System.out.println(info);
+        setZentrum( info);
         return info;
     }
 
