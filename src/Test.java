@@ -1,34 +1,34 @@
 
-
 import java.awt.*;
+import java.io.File;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 
 
 public class Test {
 
-
-
-    JButton okBttn = new JButton("Ok");
-    JButton cancelBttn = new JButton("Cancel");
-    JButton helpBttn = new JButton("Help");
-
-
-
-
-
-
-
-
-
     JPanel AdjPanel,AdjPanelInfo,DistPanel,DistPanelInfo,WegPanel,WegPanelInfo,InfoPanel,InfoPanel1,mainPanel;
     JPanel panel = new JPanel();
+    String SelectedPath = "";
+
+    public String getSelectedPath() {
+        return SelectedPath;
+    }
+
+    public void setSelectedPath(String selectedPath) {
+        SelectedPath = selectedPath;
+    }
 
     Graph g = new Graph();
+    JFrame frame = new JFrame("Testing");
     Integer size =g.readCSVFile().length;
     JButton[][] btn = new JButton[size][size];
-    private JMenuBar menuBar = new JMenuBar();
+
+
+
+    JMenuBar menuBar = new JMenuBar();
+    JMenu fileMenu = new JMenu("File"); // Create File menu
+    JMenu elementMenu = new JMenu("Weiter" ); // Create Elements menu
 
     public static void main(String[] args) {
         Graph g = new Graph();
@@ -48,15 +48,15 @@ public class Test {
                     ex.printStackTrace();
                 }
 
-
                 panel.setLayout(new GridBagLayout());
 
                 TestPane t = new TestPane();
-                JFrame frame = new JFrame("Testing");
+
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setJMenuBar(menuBar); // Add the menu bar to the window
-                JMenu fileMenu = new JMenu("File"); // Create File menu
-                JMenu elementMenu = new JMenu("Weiter" ); // Create Elements menu
+
+
+                fileMenu.add(g.newMenuItem);
                 menuBar.add(fileMenu); // Add the file menu
                 menuBar.add(elementMenu); // Add the element menu
                 mainPanel = new JPanel(new GridLayout(2,4));
@@ -82,7 +82,6 @@ public class Test {
                 mainPanel.add(InfoPanel);
                 frame.add(mainPanel);
 
-
                 frame.setSize(900, 1000);
                 frame.pack();
                 frame.setLocationRelativeTo(null);
@@ -91,14 +90,13 @@ public class Test {
         });
     }
 
+
+
+
+
     public class TestPane {
 
         public TestPane() {
-
-
-
-
-
             Graph g = new Graph();
             g.initialize();
             g.printGraph();
@@ -108,7 +106,6 @@ public class Test {
             g.radiusUndDurchmesser();
             g.zentrum();
             g.komponentenanzahl();
-
 
             JLabel radius = new JLabel("Radius:  " + g.getRadius());
             Font f = radius.getFont();
@@ -135,12 +132,6 @@ public class Test {
             DistPanel.setBorder(new MatteBorder(2, 2, 2, 2, Color.WHITE));
             WegPanel.setBorder(new MatteBorder(2, 2, 2, 2, Color.WHITE));
 
-
-
-
-
-
-
             panel.setBorder(BorderFactory.createEmptyBorder(5,10,10,10));
 
             GridBagConstraints constraints = new GridBagConstraints();
@@ -153,17 +144,13 @@ public class Test {
             constraints.gridy++;
             constraints.gridwidth = 10;
 
-
             //alignment for each label must be explicitly set
             constraints.anchor = GridBagConstraints.WEST;
             panel.add(durchmesser,constraints);
 
-
-
             constraints.gridy++;
             constraints.anchor = GridBagConstraints.WEST;
             panel.add(extrencität, constraints);
-
 
             constraints.gridy++;
             constraints.anchor = GridBagConstraints.WEST;
@@ -171,29 +158,6 @@ public class Test {
 
 
             InfoPanel.add(panel, BorderLayout.WEST);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             for (int row = 0; row < size; row++) {
                 for (int col = 0; col < size; col++) {
@@ -232,14 +196,9 @@ public class Test {
                         String m2 = g.getWegmatrix()[row][col].toString();
                         btn[row][col] = new JButton(m2);
                         WegPanel.add(btn[row][col]);
-
                     }
                 }
             }
-
         }
-
     }
-
 }
-

@@ -1,6 +1,8 @@
 
 
+import javax.swing.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -8,7 +10,6 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Graph {
-
     int size;
     private  int radius, durchmesser =0;
     private  String zentrum;
@@ -18,6 +19,35 @@ public class Graph {
     private Integer matrixA[][];
     private int exzentrizitaet[];
     private int posUnique[];
+    String inputLine = "";
+    String filelocation, path = null;
+
+    JMenuItem newMenuItem = new JMenuItem("New") {
+        public void menuSelectionChanged(boolean isSelected) {
+            super.menuSelectionChanged(isSelected);
+
+            if (isArmed()) {
+                JFileChooser fc = new JFileChooser();
+                fc.setDialogTitle("select File");
+                fc.showOpenDialog(null);
+                File file = fc.getSelectedFile();
+                path =file.getAbsolutePath();
+                
+                System.out.println("The Path" + file.getPath());
+            } else {
+                System.out.println("The menu item is no longer selected");
+            }
+        }
+    };
+    public String  getPath() {
+        if (filelocation == null) {
+             filelocation = "C:\\Users\\rezah\\OneDrive\\Desktop\\input_graph1.csv";
+        } else {
+             filelocation = path;
+        }
+        return filelocation;
+    }
+
 
     public void setZentrum(String zentrum) {
         this.zentrum = zentrum;
@@ -74,13 +104,13 @@ public class Graph {
     public Integer[][] readCSVFile()
     {
         Integer[][] myArray = null;
-        String inputLine = "";
-        String filelocation ="C:\\Users\\rezah\\OneDrive\\Desktop\\input_graph1.csv";
+
         System.out.println("....");
         try{
             //setup a scanner
-            Scanner scannerIn = new Scanner(new BufferedReader(new FileReader(filelocation)));
-            int j=0;
+                Scanner scannerIn = new Scanner(new BufferedReader(new FileReader(getPath())));
+
+          int j=0;
             while (scannerIn.hasNextLine())
             {
                 // read line in from file
