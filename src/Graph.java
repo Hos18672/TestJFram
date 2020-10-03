@@ -4,21 +4,34 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class Graph {
     int size;
     private  int radius, durchmesser =0;
     private  String zentrum;
-    private Integer AdjacencyMatrix2[][];
+    public Integer AdjacencyMatrix2[][];
     private Integer distanceMatix[][];
     private Integer wegmatrix[][];
     private Integer matrixA[][];
     private int exzentrizitaet[];
     private int posUnique[];
+
+
+
+
+    int time = 0;
+    static final int NIL = -1;
+
+    public ArrayList<ArrayList<Integer>> getAdjListArray() {
+        return adjListArray;
+    }
+
+    public  void setAdjListArray(ArrayList<ArrayList<Integer>> adjListArray) {
+        this.adjListArray = adjListArray;
+    }
+
+    ArrayList<ArrayList<Integer>> adjListArray = new ArrayList<>();
     String inputLine = "";
     String filelocation, path = null;
 
@@ -451,6 +464,249 @@ public class Graph {
         ermittle();
         return str;
     }
+
+
+
+
+
+    //------------------------ find bridge
+
+    int min(int a, int b) {
+        return (a<b)?a:b;
+    }
+
+    void bridgeFind(int start, boolean visited[], int disc[], int low[], int parent[]) {
+         int time = 0;
+        visited[start] = true;               //make the first vertex is visited
+        disc[start] = low[start] = ++time;  //initialize discovery time and the low time
+
+        for(int v = 0; v<size; v++) {
+            if(AdjacencyMatrix2[start][v] != 0) {   //for all vertex v, which is connected with start
+                if(!visited[v]) {
+                    parent[v] = start;    //make start node as parent
+                    bridgeFind(v, visited, disc, low, parent);
+
+                    low[start] = min(low[start], low[v]);    //when subtree from v is connected to one of parent of start node
+                    if(low[v] > disc[start])
+                       System.out.println("Bridge " + start );
+                } else if(v != parent[start])    //update low of start for previous call
+                    low[start] = min(low[start], disc[v]);
+            }
+        }
+    }
+
+    void bridges() {
+        boolean[] vis = new boolean[size];
+        int[] disc = new int[size];
+        int[] low = new int[size];
+        int[] parent = new int[size];
+
+        for(int i = 0; i<size; i++) {
+            vis[i] = false;    //no node is visited
+            parent[i] = -1;    //initially there is no parent for any node
+        }
+
+        for(int i = 0; i<size; i++)
+            if(!vis[i])    //if any node is unvisited, the graph is not connected
+                bridgeFind(i, vis, disc, low, parent);
+    }
+
+
+
+//---------------------------------------------------------------------------------
+    static ArrayList<ArrayList<Integer>> convert(Integer[][] a)
+    {
+        // no of vertices
+        int l = a[0].length;
+        ArrayList<ArrayList<Integer>> adjListArray
+                = new ArrayList<ArrayList<Integer>>(l);
+
+        // Create a new list for each
+        // vertex such that adjacent
+        // nodes can be stored
+        for (int i = 0; i < l; i++) {
+            adjListArray.add(new ArrayList<Integer>());
+        }
+
+        int i, j;
+        for (i = 0; i < a[0].length; i++) {
+            for (j = 0; j < a.length; j++) {
+                if (a[i][j] == 1) {
+                    adjListArray.get(i).add(j);
+
+                }
+            }
+        }
+        return adjListArray;
+    }
+
+
+    static void printArrayList(ArrayList<ArrayList<Integer>> adjListArray)
+    {
+        // Print the adjacency list
+        for (int v = 0; v < adjListArray.size(); v++) {
+            System.out.print(v);
+            for (Integer u : adjListArray.get(v)) {
+                System.out.print(" -> " + u);
+            }
+            System.out.println();
+        }
+    }
+
+
+///----------------- Articulation-------------------------------
+    void APUtil(int u, boolean visited[], int disc[],
+                int low[], int parent[], boolean ap[])
+    {
+        setAdjListArray(convert(getAdjacencyMatrix2()));
+        // Count of children in DFS Tree
+        int children = 0;
+
+        // Mark the current node as visited
+        visited[u] = true;
+
+        // Initialize discovery time and low value
+        disc[u] = low[u] = ++time;
+
+        // Go through all vertices aadjacent to this
+        Iterator<Integer> i = adjListArray.get(u).iterator();
+        while (i.hasNext())
+        {
+            int v = i.next();  // v is current adjacent of u
+
+            // If v is not visited yet, then make it a child of u
+            // in DFS tree and recur for it
+            if (!visited[v])
+            {
+                children++;
+                parent[v] = u;
+                APUtil(v, visited, disc, low, parent, ap);
+
+                // Check if the subtree rooted with v has a connection to
+                // one of the ancestors of u
+                low[u]  = Math.min(low[u], low[v]);
+
+                // u is an articulation point in following cases
+
+                // (1) u is root of DFS tree and has two or more chilren.
+                if (parent[u] == NIL && children > 1)
+                    ap[u] = true;
+
+                // (2) If u is not root and low value of one of its child
+                // is more than discovery value of u.
+                if (parent[u] != NIL && low[v] >= disc[u])
+                    ap[u] = true;
+            }
+
+            // Update low value of u for parent function calls.
+            else if (v != parent[u])
+                low[u]  = Math.min(low[u], disc[v]);
+        }
+    }
+
+    // The function to do DFS traversal. It uses recursive function APUtil()
+    void AP()
+    {
+        // Mark all the vertices as not visited
+        boolean visited[] = new boolean[size];
+        int disc[] = new int[size];
+        int low[] = new int[size];
+        int parent[] = new int[size];
+        boolean ap[] = new boolean[size]; // To store articulation points
+
+        // Initialize parent and visited, and ap(articulation point)
+        // arrays
+        for (int i = 0; i < size; i++)
+        {
+            parent[i] = NIL;
+            visited[i] = false;
+            ap[i] = false;
+        }
+
+        // Call the recursive helper function to find articulation
+        // points in DFS tree rooted with vertex 'i'
+        for (int i = 0; i < size; i++)
+            if (visited[i] == false)
+                APUtil(i, visited, disc, low, parent, ap);
+
+        // Now ap[] contains articulation points, print them
+        for (int i = 0; i < size; i++)
+            if (ap[i] == true)
+                System.out.print(i+" ");
+    }
+
+    //---------------------Bridge------------------------------------
+    void bridgeUtil(int u, boolean visited[], int disc[],
+                    int low[], int parent[])
+    {
+        setAdjListArray(convert(getAdjacencyMatrix2()));
+        // Mark the current node as visited
+        visited[u] = true;
+
+        // Initialize discovery time and low value
+        disc[u] = low[u] = ++time;
+
+        // Go through all vertices aadjacent to this
+        Iterator<Integer> i = adjListArray.get(u).iterator();
+        while (i.hasNext())
+        {
+            int v = i.next();  // v is current adjacent of u
+
+            // If v is not visited yet, then make it a child
+            // of u in DFS tree and recur for it.
+            // If v is not visited yet, then recur for it
+            if (!visited[v])
+            {
+                parent[v] = u;
+                bridgeUtil(v, visited, disc, low, parent);
+
+                // Check if the subtree rooted with v has a
+                // connection to one of the ancestors of u
+                low[u]  = Math.min(low[u], low[v]);
+
+                // If the lowest vertex reachable from subtree
+                // under v is below u in DFS tree, then u-v is
+                // a bridge
+                if (low[v] > disc[u])
+                    System.out.println(u+" "+v);
+            }
+
+            // Update low value of u for parent function calls.
+            else if (v != parent[u])
+                low[u]  = Math.min(low[u], disc[v]);
+        }
+    }
+
+
+    // DFS based function to find all bridges. It uses recursive
+    // function bridgeUtil()
+    void bridge()
+    {
+        // Mark all the vertices as not visited
+        boolean visited[] = new boolean[size];
+        int disc[] = new int[size];
+        int low[] = new int[size];
+        int parent[] = new int[size];
+
+
+        // Initialize parent and visited, and ap(articulation point)
+        // arrays
+        for (int i = 0; i < size; i++)
+        {
+            parent[i] = NIL;
+            visited[i] = false;
+        }
+
+        // Call the recursive helper function to find Bridges
+        // in DFS tree rooted with vertex 'i'
+        for (int i = 0; i < size; i++)
+            if (visited[i] == false) {
+                bridgeUtil(i, visited, disc, low, parent);
+            }
+    }
+
+
+
 
 }
 
