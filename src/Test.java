@@ -1,20 +1,11 @@
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 
 public class Test {
     JPanel AdjPanel,AdjPanelInfo,DistPanel,DistPanelInfo,WegPanel,WegPanelInfo,InfoPanel,InfoPanel1,mainPanel;
     JPanel panel = new JPanel();
-    String SelectedPath = "";
-    public String getSelectedPath() {
-        return SelectedPath;
-    }
-    public void setSelectedPath(String selectedPath) {
-        SelectedPath = selectedPath;
-    }
     Graph g = new Graph();
     JFrame frame = new JFrame("Testing");
     Integer size =g.readCSVFile().length;
@@ -22,24 +13,6 @@ public class Test {
     JMenuBar menuBar = new JMenuBar();
     JMenu fileMenu = new JMenu("File"); // Create File menu
     JMenu elementMenu = new JMenu("Weiter" ); // Create Elements menu
-
-    public static void main(String[] args) {
-        Graph g = new Graph();
-         Island i = new Island();
-        g.initialize();
-        g.ermittle();
-
-        System.out.println(i.countIslands(g.getAdjacencyMatrix2()));
-        new Test();
-        ArrayList<ArrayList<Integer>> adjListArray =  g.convert(g.AdjacencyMatrix2);
-        g.printArrayList(adjListArray);
-        System.out.print("Articulation: ");
-        g.AP();
-        System.out.println("\nBirdge: ");
-        g.bridge();
-        //System.out.println(b.shortestBridge(g.getAdjacencyMatrix2()));
-
-    }
     public Test() {
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -92,7 +65,6 @@ public class Test {
             g.radiusUndDurchmesser();
             g.zentrum();
             g.komponentenanzahl();
-            g.bridges();
 
             // create Labels for Infos
             JLabel radius = new JLabel("Radius:                     " + g.getRadius());
@@ -197,6 +169,20 @@ public class Test {
                 }
             }
         }
+    }
+    public static void main(String[] args) {
+        Graph g = new Graph();
+        g.initialize();
+        g.ermittle();
+        new Test();
+        ArrayList<ArrayList<Integer>> adjListArray =  g.convert(g.AdjacencyMatrix2);
+        g.printArrayList(adjListArray);
+        System.out.print("Articulation: ");
+        g.AP();
+        System.out.println("\nBirdge: ");
+        g.bridge();
+        //System.out.println(b.shortestBridge(g.getAdjacencyMatrix2()));
+
     }
 
 
