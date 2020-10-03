@@ -7,36 +7,21 @@ import java.io.FileReader;
 import java.util.*;
 
 public class Graph {
-    int size;
-    private  int radius, durchmesser =0;
-    private  String zentrum;
-    public Integer AdjacencyMatrix2[][];
+    private int size;
+    private int radius, durchmesser =0;
+    private String zentrum;
+    public  Integer AdjacencyMatrix2[][];
     private Integer distanceMatix[][];
     private Integer wegmatrix[][];
     private Integer matrixA[][];
     private int exzentrizitaet[];
     private int posUnique[];
-
-
-
-
-    int time = 0;
-    static final int NIL = -1;
-
-    public ArrayList<ArrayList<Integer>> getAdjListArray() {
-        return adjListArray;
-    }
-
-    public  void setAdjListArray(ArrayList<ArrayList<Integer>> adjListArray) {
-        this.adjListArray = adjListArray;
-    }
-
-    ArrayList<ArrayList<Integer>> adjListArray = new ArrayList<>();
-    String inputLine = "";
-    String filelocation, path = null;
-
-    JMenuItem newMenuItem = new JMenuItem("New") {
-        public void menuSelectionChanged(boolean isSelected) {
+    private int time = 0;
+    private static final int NIL = -1;
+    private ArrayList<ArrayList<Integer>> adjListArray = new ArrayList<>();
+    private String inputLine = "";
+    private String filelocation, path = null;
+    JMenuItem newMenuItem = new JMenuItem("New") {public void menuSelectionChanged(boolean isSelected) {
             super.menuSelectionChanged(isSelected);
 
             if (isArmed()) {
@@ -50,8 +35,8 @@ public class Graph {
             } else {
                 System.out.println("The menu item is no longer selected");
             }
-        }
-    };
+        }};
+    //-----------------------Getter-------------------------------------------------
     public String  getPath() {
         if (filelocation == null) {
              filelocation = "C:\\Users\\rezah\\OneDrive\\Desktop\\input_graph1.csv";
@@ -60,62 +45,54 @@ public class Graph {
         }
         return filelocation;
     }
-
-
-    public void setZentrum(String zentrum) {
-        this.zentrum = zentrum;
-    }
-
     public String getZentrum() {
         return zentrum;
     }
-
     public Integer[][] getAdjacencyMatrix2() {
         return AdjacencyMatrix2;
     }
-
     public Integer[][] getDistanceMatix() {
         return distanceMatix;
     }
-
     public Integer[][] getWegmatrix() {
         return wegmatrix;
     }
-
     public Integer[][] getMatrixA() {
         return matrixA;
     }
-
     public int[] getExzentrizitaet() {
         return exzentrizitaet;
     }
-
     public int getSize() {
         return size;
     }
-
     public int getRadius() {
         return radius;
     }
-
     public int getDurchmesser() {
         return durchmesser;
     }
-
+    public ArrayList<ArrayList<Integer>> getAdjListArray() {
+        return adjListArray;
+    }
+    //-----------------------Setter-----------------------------------------------
     public void setSize(int size) {
         this.size = size;
     }
-
+    public void setZentrum(String zentrum) {
+        this.zentrum = zentrum;
+    }
     public void setRadius(int radius) {
         this.radius = radius;
     }
-
     public void setDurchmesser(int durchmesser) {
         this.durchmesser = durchmesser;
     }
+    public void setAdjListArray(ArrayList<ArrayList<Integer>> adjListArray) {
+        this.adjListArray = adjListArray;
+    }
 
-    public Integer[][] readCSVFile()
-    {
+    public Integer[][] readCSVFile() {
         Integer[][] myArray = null;
 
         System.out.println("....");
@@ -164,7 +141,7 @@ public class Graph {
             }
         }
     }
-    public void allesNeuSetzen() {
+    /*    public void allesNeuSetzen() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 AdjacencyMatrix2[i][j] = 0;
@@ -176,7 +153,7 @@ public class Graph {
                 }
             }
         }
-    }
+    }*/
     public void initialize() {
         Integer[][] loadedMtrix = readCSVFile();
         size = loadedMtrix.length;
@@ -208,7 +185,6 @@ public class Graph {
             }
         }
     }
-
     public void ermittle() {
         int anzMultipliziert = 0;
         while (anzMultipliziert < size) {
@@ -225,7 +201,6 @@ public class Graph {
             }
         }
     }
-
     public Integer[][] multiply() {
         Integer multiply[][] = new Integer[size][size];
         int sum = 0;
@@ -246,8 +221,7 @@ public class Graph {
 
         return multiply;
     }
-    public void PrintDistanceMatrix()
-    {
+    public void PrintDistanceMatrix() {
         System.out.println("\n\n------------ Print DistanceMatrix---------------------\n");
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -278,9 +252,7 @@ public class Graph {
         info = info+ "} \n";
         System.out.print(info);
         return info;
-
     }
-
     public void radiusUndDurchmesser(){
         this.radius = 999;
         this.durchmesser =0;
@@ -321,8 +293,6 @@ public class Graph {
         setZentrum( info);
         return info;
     }
-
-
     public boolean isZusammenhaengend(){
         int count = 0;
         for (int i = 0; i < size; i++){
@@ -376,7 +346,6 @@ public class Graph {
         //Komponentenanzahl zurückgeben
         return setString.size();
     }
-
     public String komponenteAusgeben(){
         String infKompo="";
         int komponent = 1;
@@ -396,8 +365,7 @@ public class Graph {
         }
         return infKompo;
     }
-
-    public String bruecken(){
+    /*    public String bruecken(){
         String str = "{";
         int anzBruecken = 0;
         int anzKompVorher = komponentenanzahl();
@@ -425,9 +393,8 @@ public class Graph {
         initialize();
         ermittle();
         return str + "Anzahl :" + anzBruecken;
-    }
-
-    public String artikulation(){
+    }*/
+    /* public String artikulation(){
         Integer[][] adjaKopie = new Integer[size][size];
         for (int i = 0; i < size; i++){
             for (int j = 0; j < size; j++){
@@ -464,58 +431,9 @@ public class Graph {
         ermittle();
         return str;
     }
-
-
-
-
-
-    //------------------------ find bridge
-
-    int min(int a, int b) {
-        return (a<b)?a:b;
-    }
-
-    void bridgeFind(int start, boolean visited[], int disc[], int low[], int parent[]) {
-         int time = 0;
-        visited[start] = true;               //make the first vertex is visited
-        disc[start] = low[start] = ++time;  //initialize discovery time and the low time
-
-        for(int v = 0; v<size; v++) {
-            if(AdjacencyMatrix2[start][v] != 0) {   //for all vertex v, which is connected with start
-                if(!visited[v]) {
-                    parent[v] = start;    //make start node as parent
-                    bridgeFind(v, visited, disc, low, parent);
-
-                    low[start] = min(low[start], low[v]);    //when subtree from v is connected to one of parent of start node
-                    if(low[v] > disc[start])
-                       System.out.println("Bridge " + start );
-                } else if(v != parent[start])    //update low of start for previous call
-                    low[start] = min(low[start], disc[v]);
-            }
-        }
-    }
-
-    void bridges() {
-        boolean[] vis = new boolean[size];
-        int[] disc = new int[size];
-        int[] low = new int[size];
-        int[] parent = new int[size];
-
-        for(int i = 0; i<size; i++) {
-            vis[i] = false;    //no node is visited
-            parent[i] = -1;    //initially there is no parent for any node
-        }
-
-        for(int i = 0; i<size; i++)
-            if(!vis[i])    //if any node is unvisited, the graph is not connected
-                bridgeFind(i, vis, disc, low, parent);
-    }
-
-
-
-//---------------------------------------------------------------------------------
-    static ArrayList<ArrayList<Integer>> convert(Integer[][] a)
-    {
+*/
+    //----------------------ArrayList -----------------------------------------------
+    public static ArrayList<ArrayList<Integer>> convert(Integer[][] a) {
         // no of vertices
         int l = a[0].length;
         ArrayList<ArrayList<Integer>> adjListArray
@@ -539,10 +457,7 @@ public class Graph {
         }
         return adjListArray;
     }
-
-
-    static void printArrayList(ArrayList<ArrayList<Integer>> adjListArray)
-    {
+    public static void printArrayList(ArrayList<ArrayList<Integer>> adjListArray){
         // Print the adjacency list
         for (int v = 0; v < adjListArray.size(); v++) {
             System.out.print(v);
@@ -553,11 +468,8 @@ public class Graph {
         }
     }
 
-
-///----------------- Articulation-------------------------------
-    void APUtil(int u, boolean visited[], int disc[],
-                int low[], int parent[], boolean ap[])
-    {
+    //----------------- Articulation-Point-------------------------------
+    public void APUtil(int u, boolean visited[], int disc[], int low[], int parent[], boolean ap[]) {
         setAdjListArray(convert(getAdjacencyMatrix2()));
         // Count of children in DFS Tree
         int children = 0;
@@ -603,10 +515,8 @@ public class Graph {
                 low[u]  = Math.min(low[u], disc[v]);
         }
     }
-
     // The function to do DFS traversal. It uses recursive function APUtil()
-    void AP()
-    {
+    public void AP() {
         // Mark all the vertices as not visited
         boolean visited[] = new boolean[size];
         int disc[] = new int[size];
@@ -634,11 +544,8 @@ public class Graph {
             if (ap[i] == true)
                 System.out.print(i+" ");
     }
-
     //---------------------Bridge------------------------------------
-    void bridgeUtil(int u, boolean visited[], int disc[],
-                    int low[], int parent[])
-    {
+    public void bridgeUtil(int u, boolean visited[], int disc[], int low[], int parent[]) {
         setAdjListArray(convert(getAdjacencyMatrix2()));
         // Mark the current node as visited
         visited[u] = true;
@@ -676,18 +583,14 @@ public class Graph {
                 low[u]  = Math.min(low[u], disc[v]);
         }
     }
-
-
     // DFS based function to find all bridges. It uses recursive
     // function bridgeUtil()
-    void bridge()
-    {
+    public void bridge() {
         // Mark all the vertices as not visited
         boolean visited[] = new boolean[size];
         int disc[] = new int[size];
         int low[] = new int[size];
         int parent[] = new int[size];
-
 
         // Initialize parent and visited, and ap(articulation point)
         // arrays
@@ -704,10 +607,6 @@ public class Graph {
                 bridgeUtil(i, visited, disc, low, parent);
             }
     }
-
-
-
-
 }
 
 
