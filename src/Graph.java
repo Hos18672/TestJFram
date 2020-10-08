@@ -1,5 +1,3 @@
-
-
 import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,6 +18,9 @@ public class Graph {
     private static final int NIL = -1;
     private ArrayList<ArrayList<Integer>> adjListArray = new ArrayList<>();
     private String inputLine = "";
+
+    String apPrint = "";
+    String bridgePrint = "";
     private String filelocation, path = null;
     JMenuItem newMenuItem = new JMenuItem("New") {public void menuSelectionChanged(boolean isSelected) {
             super.menuSelectionChanged(isSelected);
@@ -37,17 +38,7 @@ public class Graph {
             }
         }};
     //-----------------------Getter-------------------------------------------------
-    public String  getPath() {
-        if (filelocation == null) {
-             filelocation = "C:\\Users\\rezah\\OneDrive\\Desktop\\input_graph1.csv";
-        } else {
-             filelocation = path;
-        }
-        return filelocation;
-    }
-    public String getZentrum() {
-        return zentrum;
-    }
+
     public Integer[][] getAdjacencyMatrix2() {
         return AdjacencyMatrix2;
     }
@@ -57,23 +48,22 @@ public class Graph {
     public Integer[][] getWegmatrix() {
         return wegmatrix;
     }
-    public Integer[][] getMatrixA() {
-        return matrixA;
+    public String getPath() {
+        if (filelocation == null) {
+            filelocation = "C:\\Users\\rezah\\OneDrive\\Desktop\\input_graph1.csv";
+        } else {
+            filelocation = path;
+        }
+        return filelocation;
     }
-    public int[] getExzentrizitaet() {
-        return exzentrizitaet;
-    }
-    public int getSize() {
-        return size;
+    public String getZentrum() {
+        return zentrum;
     }
     public int getRadius() {
         return radius;
     }
     public int getDurchmesser() {
         return durchmesser;
-    }
-    public ArrayList<ArrayList<Integer>> getAdjListArray() {
-        return adjListArray;
     }
     //-----------------------Setter-----------------------------------------------
     public void setSize(int size) {
@@ -91,15 +81,11 @@ public class Graph {
     public void setAdjListArray(ArrayList<ArrayList<Integer>> adjListArray) {
         this.adjListArray = adjListArray;
     }
-
     public Integer[][] readCSVFile() {
         Integer[][] myArray = null;
-
         System.out.println("....");
-        try{
-            //setup a scanner
+        try{   //setup a scanner
                 Scanner scannerIn = new Scanner(new BufferedReader(new FileReader(getPath())));
-
           int j=0;
             while (scannerIn.hasNextLine())
             {
@@ -113,7 +99,6 @@ public class Graph {
                 if(myArray == null) {
                     myArray = new Integer[inArray.length][inArray.length];
                 }
-
                 //copy the content of the inArray to the myArray
                 for (int i =0; i < inArray.length; i++)
                 {
@@ -124,12 +109,10 @@ public class Graph {
                 // Increment the row in the array
                 j++;
             }
-
         }catch (Exception e)
         {
             e.printStackTrace();
         }
-
         return myArray;
     }
     public void printGraph() {
@@ -201,6 +184,33 @@ public class Graph {
             }
         }
     }
+    public void PrintDistanceMatrix() {
+        System.out.println("\n\n------------ Print DistanceMatrix---------------------\n");
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                System.out.print(distanceMatix[i][j] +" ");
+            }
+            System.out.println();
+        }
+    }
+    public void radiusUndDurchmesser(){
+        this.radius = 999;
+        this.durchmesser =0;
+        for (int i = 0; i < exzentrizitaet.length; i++){
+            if (exzentrizitaet[i] < radius && exzentrizitaet[i] > -1 ){
+                radius = exzentrizitaet[i];
+                setRadius(radius);
+            }
+            if (exzentrizitaet[i] > durchmesser){
+                this.durchmesser = exzentrizitaet[i];
+                setDurchmesser(this.durchmesser);
+            }
+        }
+        System.out.println("\n------------ Print Radius ---------------------\n");
+        System.out.println("Radius: " +radius);
+        System.out.println("\n------------ Print Durchmesser ---------------------\n");
+        System.out.println("Durchmesser: " +durchmesser);
+    }
     public Integer[][] multiply() {
         Integer multiply[][] = new Integer[size][size];
         int sum = 0;
@@ -220,15 +230,6 @@ public class Graph {
         }
 
         return multiply;
-    }
-    public void PrintDistanceMatrix() {
-        System.out.println("\n\n------------ Print DistanceMatrix---------------------\n");
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                System.out.print(distanceMatix[i][j] +" ");
-            }
-            System.out.println();
-        }
     }
     public String exzentrizitaet(){
         int max = 0;
@@ -252,24 +253,6 @@ public class Graph {
         info = info+ "} \n";
         System.out.print(info);
         return info;
-    }
-    public void radiusUndDurchmesser(){
-        this.radius = 999;
-        this.durchmesser =0;
-        for (int i = 0; i < exzentrizitaet.length; i++){
-            if (exzentrizitaet[i] < radius && exzentrizitaet[i] > -1 ){
-                radius = exzentrizitaet[i];
-                setRadius(radius);
-            }
-            if (exzentrizitaet[i] > durchmesser){
-                this.durchmesser = exzentrizitaet[i];
-                setDurchmesser(this.durchmesser);
-            }
-        }
-        System.out.println("\n------------ Print Radius ---------------------\n");
-        System.out.println("Radius: " +radius);
-        System.out.println("\n------------ Print Durchmesser ---------------------\n");
-        System.out.println("Durchmesser: " +durchmesser);
     }
     public String zentrum(){
         String info;
@@ -438,20 +421,17 @@ public class Graph {
         int l = a[0].length;
         ArrayList<ArrayList<Integer>> adjListArray
                 = new ArrayList<ArrayList<Integer>>(l);
-
         // Create a new list for each
         // vertex such that adjacent
         // nodes can be stored
         for (int i = 0; i < l; i++) {
             adjListArray.add(new ArrayList<Integer>());
         }
-
         int i, j;
         for (i = 0; i < a[0].length; i++) {
             for (j = 0; j < a.length; j++) {
                 if (a[i][j] == 1) {
                     adjListArray.get(i).add(j);
-
                 }
             }
         }
@@ -467,25 +447,20 @@ public class Graph {
             System.out.println();
         }
     }
-
     //----------------- Articulation-Point-------------------------------
     public void APUtil(int u, boolean visited[], int disc[], int low[], int parent[], boolean ap[]) {
         setAdjListArray(convert(getAdjacencyMatrix2()));
         // Count of children in DFS Tree
         int children = 0;
-
         // Mark the current node as visited
         visited[u] = true;
-
         // Initialize discovery time and low value
         disc[u] = low[u] = ++time;
-
         // Go through all vertices aadjacent to this
         Iterator<Integer> i = adjListArray.get(u).iterator();
         while (i.hasNext())
         {
             int v = i.next();  // v is current adjacent of u
-
             // If v is not visited yet, then make it a child of u
             // in DFS tree and recur for it
             if (!visited[v])
@@ -493,23 +468,18 @@ public class Graph {
                 children++;
                 parent[v] = u;
                 APUtil(v, visited, disc, low, parent, ap);
-
                 // Check if the subtree rooted with v has a connection to
                 // one of the ancestors of u
                 low[u]  = Math.min(low[u], low[v]);
-
                 // u is an articulation point in following cases
-
                 // (1) u is root of DFS tree and has two or more chilren.
                 if (parent[u] == NIL && children > 1)
                     ap[u] = true;
-
                 // (2) If u is not root and low value of one of its child
                 // is more than discovery value of u.
                 if (parent[u] != NIL && low[v] >= disc[u])
                     ap[u] = true;
             }
-
             // Update low value of u for parent function calls.
             else if (v != parent[u])
                 low[u]  = Math.min(low[u], disc[v]);
@@ -523,7 +493,6 @@ public class Graph {
         int low[] = new int[size];
         int parent[] = new int[size];
         boolean ap[] = new boolean[size]; // To store articulation points
-
         // Initialize parent and visited, and ap(articulation point)
         // arrays
         for (int i = 0; i < size; i++)
@@ -532,33 +501,32 @@ public class Graph {
             visited[i] = false;
             ap[i] = false;
         }
-
         // Call the recursive helper function to find articulation
         // points in DFS tree rooted with vertex 'i'
         for (int i = 0; i < size; i++)
             if (visited[i] == false)
                 APUtil(i, visited, disc, low, parent, ap);
-
         // Now ap[] contains articulation points, print them
         for (int i = 0; i < size; i++)
-            if (ap[i] == true)
-                System.out.print(i+" ");
+            if (ap[i] == true) {
+                apPrint += i + "  ";
+                System.out.print(i + " ");
+            }
+
+
     }
     //---------------------Bridge------------------------------------
     public void bridgeUtil(int u, boolean visited[], int disc[], int low[], int parent[]) {
-        setAdjListArray(convert(getAdjacencyMatrix2()));
+
         // Mark the current node as visited
         visited[u] = true;
-
         // Initialize discovery time and low value
         disc[u] = low[u] = ++time;
-
         // Go through all vertices aadjacent to this
         Iterator<Integer> i = adjListArray.get(u).iterator();
         while (i.hasNext())
         {
             int v = i.next();  // v is current adjacent of u
-
             // If v is not visited yet, then make it a child
             // of u in DFS tree and recur for it.
             // If v is not visited yet, then recur for it
@@ -566,18 +534,16 @@ public class Graph {
             {
                 parent[v] = u;
                 bridgeUtil(v, visited, disc, low, parent);
-
                 // Check if the subtree rooted with v has a
                 // connection to one of the ancestors of u
                 low[u]  = Math.min(low[u], low[v]);
-
                 // If the lowest vertex reachable from subtree
                 // under v is below u in DFS tree, then u-v is
                 // a bridge
                 if (low[v] > disc[u])
+                    bridgePrint+= u+"-"+v +"   ";
                     System.out.println(u+" "+v);
             }
-
             // Update low value of u for parent function calls.
             else if (v != parent[u])
                 low[u]  = Math.min(low[u], disc[v]);
@@ -591,7 +557,6 @@ public class Graph {
         int disc[] = new int[size];
         int low[] = new int[size];
         int parent[] = new int[size];
-
         // Initialize parent and visited, and ap(articulation point)
         // arrays
         for (int i = 0; i < size; i++)
@@ -599,7 +564,6 @@ public class Graph {
             parent[i] = NIL;
             visited[i] = false;
         }
-
         // Call the recursive helper function to find Bridges
         // in DFS tree rooted with vertex 'i'
         for (int i = 0; i < size; i++)

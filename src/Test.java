@@ -4,15 +4,15 @@ import javax.swing.*;
 import javax.swing.border.MatteBorder;
 
 public class Test {
-    JPanel AdjPanel,AdjPanelInfo,DistPanel,DistPanelInfo,WegPanel,WegPanelInfo,InfoPanel,InfoPanel1,mainPanel;
-    JPanel panel = new JPanel();
-    Graph g = new Graph();
-    JFrame frame = new JFrame("Testing");
-    Integer size =g.readCSVFile().length;
-    JButton[][] btn = new JButton[size][size];
-    JMenuBar menuBar = new JMenuBar();
-    JMenu fileMenu = new JMenu("File"); // Create File menu
-    JMenu elementMenu = new JMenu("Weiter" ); // Create Elements menu
+        JPanel AdjPanel,AdjPanelInfo,DistPanel,DistPanelInfo,WegPanel,WegPanelInfo,InfoPanel,InfoPanel1,mainPanel;
+        JPanel  panel = new JPanel();
+        Graph   graph = new Graph();
+        Integer size =graph.readCSVFile().length;
+        JFrame  frame = new JFrame("Testing");
+        JButton[][] btn = new JButton[size][size];
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File"); // Create File menu
+        JMenu elementMenu = new JMenu("Weiter" ); // Create Elements menu
     public Test() {
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -23,29 +23,30 @@ public class Test {
                     ex.printStackTrace();
                 }
                 panel.setLayout(new GridBagLayout());
-                TestPane t = new TestPane();
+                new TestPane();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setJMenuBar(menuBar); // Add the menu bar to the window
-                fileMenu.add(g.newMenuItem);
+                fileMenu.add(graph.newMenuItem);
                 menuBar.add(fileMenu); // Add the file menu
                 menuBar.add(elementMenu); // Add the element menu
                 mainPanel = new JPanel(new GridLayout(2,4));
-                AdjPanelInfo.add(AdjPanel);
+                AdjPanelInfo.add(new JScrollPane(AdjPanel));
                 AdjPanelInfo.setSize(20,10);
-                AdjPanelInfo.add(new JLabel("AdjMarix", JLabel.CENTER), BorderLayout.PAGE_START);
-                DistPanelInfo.add(DistPanel);
+                AdjPanelInfo.add(new JLabel("AdjMatrix", JLabel.CENTER), BorderLayout.PAGE_START);
+                DistPanelInfo.add(new JScrollPane(DistPanel));
                 DistPanelInfo.setSize(20,10);
-                DistPanelInfo.add(new JLabel("DistMarix", JLabel.CENTER), BorderLayout.PAGE_START);
-                WegPanelInfo.add(WegPanel);
+                DistPanelInfo.add(new JLabel("DistMatrix", JLabel.CENTER), BorderLayout.PAGE_START);
+                WegPanelInfo.add(new JScrollPane(WegPanel));
                 WegPanelInfo.setSize(20,10);
-                WegPanelInfo.add(new JLabel("WegMarix", JLabel.CENTER), BorderLayout.PAGE_START);
+                WegPanelInfo.add(new JLabel("WegMatrix", JLabel.CENTER), BorderLayout.PAGE_START);
                 InfoPanel.add(InfoPanel1);
                 InfoPanel.setSize(20,10);
                 InfoPanel.add(new JLabel("Info", JLabel.CENTER), BorderLayout.PAGE_START);
                 mainPanel.add(AdjPanelInfo);
                 mainPanel.add(DistPanelInfo);
                 mainPanel.add(WegPanelInfo);
-                mainPanel.add(InfoPanel);
+                mainPanel.add(new JScrollPane(InfoPanel));
+                mainPanel.setSize(600, 900);
                 frame.add(mainPanel);
                 frame.setSize(900, 1000);
                 frame.pack();
@@ -65,6 +66,8 @@ public class Test {
             g.radiusUndDurchmesser();
             g.zentrum();
             g.komponentenanzahl();
+            g.AP();
+            g.bridge();
 
             // create Labels for Infos
             JLabel radius = new JLabel("Radius:                     " + g.getRadius());
@@ -74,16 +77,18 @@ public class Test {
             durchmesser.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
             JLabel extrencität = new JLabel("Extrencicität:          "+ g.exzentrizitaet());
             extrencität.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
-            JLabel zentrum = new JLabel("Zentrum:                  " + g.getZentrum());
+            JLabel zentrum = new JLabel("Zentrum:                 " + g.getZentrum());
             zentrum.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
-            JLabel Komponents = new JLabel("KomponentsNum:   " + g.komponentenanzahl());
+            JLabel Komponents = new JLabel("KomponentsNum:  " + g.komponentenanzahl());
             Komponents.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
-            JLabel KomponentsOutput = new JLabel("Komponents:           " + g.komponenteAusgeben());
+            JLabel KomponentsOutput = new JLabel("Komponents:          " + g.komponenteAusgeben());
             KomponentsOutput.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
             JLabel Zusammenhengend = new JLabel("Zusammenhengend:  " + g.isZusammenhaengend());
             Zusammenhengend.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
-          //  JLabel Bridge = new JLabel("Brücken:           " + g.bruecken());
-          //  Bridge.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+            JLabel Articulation = new JLabel("Articulation:            " + g.apPrint);
+            Articulation.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+            JLabel Bridge = new JLabel("Brücken:                  " + g.bridgePrint);
+            Bridge.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
 
             // Create Panels
             AdjPanel  = new JPanel();
@@ -105,9 +110,8 @@ public class Test {
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.gridy = 1;
             // Add all Info into Panel Info
-            constraints.insets = new Insets(0,0,2,0);
-            panel.add(radius, constraints);
-            constraints.insets = new Insets(0,0,2,0);
+            // constraints.insets = new Insets(0,0,2,0);
+            panel.add(extrencität, constraints);
             constraints.gridy++;
             constraints.gridwidth = 10;
             //alignment for each label must be explicitly set
@@ -115,10 +119,14 @@ public class Test {
             panel.add(durchmesser,constraints);
             constraints.gridy++;
             constraints.anchor = GridBagConstraints.WEST;
-            panel.add(extrencität, constraints);
+            panel.add(radius, constraints);
             constraints.gridy++;
             constraints.anchor = GridBagConstraints.WEST;
             panel.add(zentrum,constraints);
+            constraints.gridy++;
+            panel.add(Bridge,constraints);
+            constraints.gridy++;
+            panel.add(Articulation,constraints);
             constraints.gridy++;
             panel.add(Komponents,constraints);
             constraints.gridy++;
@@ -126,8 +134,6 @@ public class Test {
             constraints.gridy++;
             panel.add(Zusammenhengend,constraints);
             constraints.gridy++;
-         //   panel.add(Bridge,constraints);
-           // constraints.gridy++;
 
             // Add Panel of Infos to the Infopanel
             InfoPanel.add(panel, BorderLayout.WEST);
